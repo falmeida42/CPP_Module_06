@@ -1,8 +1,11 @@
 #include "Conversion.hpp"
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    Conversion conversion;
+    if (argc != 2)
+        return (0);
+    
+    Conversion conv(argv[1]);
 
-    Conversion conversion2(conversion);
+    
 }
