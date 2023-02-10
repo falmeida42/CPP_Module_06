@@ -12,21 +12,25 @@ typedef struct s_elements {
 class Conversion {
     private:
         elements   element;
-        int     typeOfstr ;
+        int     typeOfstr;
         const std::string _str;
-        int    isDisplayable(const char  &c);
+
+        bool isChar();
+        bool isFloat();
+        bool isDouble();
+        bool isInt();
+
+        void toChar();
+        void toFloat();
+        void toDouble();
+        void toInt();
+
+        int     isDisplayable();
         void    setType();
-        bool    isChar();
-        bool    isInt();
-        bool    isFloat();
-        bool    isDouble();
         const   std::string printErrorDisplay(const int &result) const;
     public:
 
-        const char    toChar();
-        const int     toInt();
-        const float   toFloat();
-        const double  toDouble();
+        void          convert();
         Conversion();
         Conversion(const std::string &str);
         Conversion(const Conversion& other);

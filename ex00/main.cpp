@@ -6,6 +6,5 @@ int main(int argc, char *argv[]) {
         return (0);
     
     Conversion conv(argv[1]);
-
-    
+    conv.convert();
 }

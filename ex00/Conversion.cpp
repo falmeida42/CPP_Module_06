@@ -1,47 +1,131 @@
 #include "Conversion.hpp"
 
 Conversion::Conversion() {
-    std::cout << "Conversion created" << std::endl;
-    setType();
+
 }
 
 Conversion::~Conversion() {
-    std::cout << "Conversion destroyed" << std::endl;
 }
 
 Conversion::Conversion(const Conversion& other) {
-    std::cout << "Conversion created" << std::endl;
     *this = other;
 }
 
 Conversion::Conversion(const std::string &str) : _str(str) {
-    std::cout << "Conversion created" << std::endl;
 }
 
 Conversion &Conversion::operator=(const Conversion& other) {
     return (*this);
 }
 
-const char    Conversion::toChar() {
-    return 'c';
+void        Conversion::convert() {
+
+    setType();
+    toChar();
+    toInt();
+    toFloat();
+    toDouble();
 }
 
-const int     Conversion::toInt() {
-    return 0;
+void Conversion::toChar() {
+    std::cout << "char: ";
+
+    switch (typeOfstr)
+    {
+        case 0:   
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            std::cout << _str; 
+            break;
+        case -1:
+            std::cout << "impossible";
+            break;
+        default:
+            break;
+    }
+
+    std::cout << std::endl;
 }
 
-const float   Conversion::toFloat() {
-    return 10.0f;
+void Conversion::toInt() {
+    std::cout << "int: ";
+
+    switch (typeOfstr)
+    {
+        case 0:
+            std::cout << _str;   
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+
+            break;
+        case -1:
+            std::cout << "impossible";
+            break;
+        default:
+            break;
+    }
+
+    std::cout << std::endl;
 }
 
-const double  Conversion::toDouble() {
-    return 10.0;
+void Conversion::toFloat() {
+    std::cout << "float: ";
+
+    switch (typeOfstr)
+    {
+        case 0:   
+            break;
+        case 1:
+            std::cout << _str; 
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case -1:
+            break;
+        default:
+            break;
+    }
+
+    std::cout << std::endl;
 }
 
-int          Conversion::isDisplayable(const char  &c) {
-    if (c >= 33 && c <= 126)
+void Conversion::toDouble() {
+    std::cout << "double: ";
+
+    switch (typeOfstr)
+    {
+        case 0:   
+            break;
+        case 1:
+            break;
+        case 2:
+            std::cout << _str; 
+            break;
+        case 3:
+            break;
+        case -1:
+            break;
+        default:
+            break;
+    }
+
+    std::cout << std::endl;
+}
+
+int          Conversion::isDisplayable() {
+    if (element.Char >= 33 && element.Char <= 126)
         return 0;
-    else if (c > 127)
+    else if (element.Char > 127)
         return 1;
     else
         return 2;
@@ -49,15 +133,16 @@ int          Conversion::isDisplayable(const char  &c) {
 
 const   std::string Conversion::printErrorDisplay(const int &result) const {
    
-    if (result == 1)
+    if (result == 0)
         return ("Non displayable");
     else
         return ("impossible");
 }
 
 bool        Conversion::isChar() {
-        if (_str.length() == 1) {
-            return std::isdigit(_str[0]);
+
+        if (_str.size() == 1) {
+            return !std::isdigit(_str[0]);
         }
         return false;
 }
@@ -65,10 +150,10 @@ bool        Conversion::isChar() {
 bool        Conversion::isInt() {
 
     std::string::size_type pos = 0;
-
-    if (_str[0] != '+' || _str[0] != '-')
+    
+    if (_str[0] == '+' || _str[0] == '-')
         pos++;
-    while (pos < _str.length()) {
+    while (pos < _str.size()) {
         if (!std::isdigit(_str[pos]))
             return false;
         pos++;
@@ -77,11 +162,45 @@ bool        Conversion::isInt() {
 }
 
 bool        Conversion::isFloat() {
+
+    std::string::size_type pos = 0;
+    bool                   dot = false;
+
+    if (_str[0] == '+' || _str[0] == '-')
+        pos++;
+    while (pos < _str.size() - 1) {
+        if (!std::isdigit(_str[pos]))
+        {
+            if (_str[pos] == '.' && dot == false)
+                dot = true;
+            else
+                return false;
+        }
+        pos++;
+    }
+    if (_str[pos] == 'f' && _str.size() > 1)
+        return true;
     return false;
 }
 
 bool        Conversion::isDouble() {
-    return false;
+    
+    std::string::size_type pos = 0;
+    bool                   dot = false;
+    
+    if (_str[0] == '+' || _str[0] == '-')
+        pos++;
+    while (pos < _str.size()) {
+        if (!std::isdigit(_str[pos]))
+        {
+            if (_str[pos] == '.' && dot == false)
+                dot = true;
+            else
+                return false;
+        }
+        pos++;
+    }
+    return true;
 }
 
 void        Conversion::setType() {
@@ -90,12 +209,12 @@ void        Conversion::setType() {
 
     if (isInt())
         this->typeOfstr = 0;
-    if (isFloat())
+    else if (isFloat())
         this->typeOfstr = 1;
-    if (isDouble())
+    else if (isDouble())
         this->typeOfstr = 2;
-    if (isChar())
+    else if (isChar())
         this->typeOfstr = 3;
-
-    std::cout << "The type of string is " << typeOfstr << std::endl;
+    else
+        this->typeOfstr = -1;
 }
