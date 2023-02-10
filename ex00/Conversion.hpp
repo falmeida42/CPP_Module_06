@@ -12,7 +12,7 @@ typedef struct s_elements {
 class Conversion {
     private:
         elements   element;
-        int     typeOfstr;
+        int     typeOfstr ;
         const std::string _str;
         int    isDisplayable(const char  &c);
         void    setType();
