@@ -1,12 +1,22 @@
 #ifndef CONVERSION_HPP
 #define CONVERSION_CPP
+
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <exception>
+#include <limits.h>
+#include <limits>
 
 typedef struct s_elements {
     int     Int;
     float   Float;
     double  Double;
     char    Char;
+    bool    firstConvError;
 } elements;
 
 class Conversion {
@@ -27,7 +37,9 @@ class Conversion {
 
         int     isDisplayable();
         void    setType();
+        void    converter();
         const   std::string printErrorDisplay(const int &result) const;
+
     public:
 
         void          convert();
