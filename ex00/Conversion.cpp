@@ -211,6 +211,10 @@ bool        Conversion::isInt() {
             return false;
         pos++;
     }
+    if (_str.length() > 9) {
+        typeOfstr = 2;
+        return false;
+    }
     return true;
 }
 
