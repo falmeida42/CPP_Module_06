@@ -10,13 +10,18 @@
 #include <exception>
 #include <limits.h>
 #include <limits>
+#include <cmath>
+
+#define DBL_MAX
+#define DBL_MIN
 
 typedef struct s_elements {
     int     Int;
     float   Float;
     double  Double;
     char    Char;
-    bool    firstConvError;
+    bool    firstConvError = false;
+    bool    isnan = false;
 } elements;
 
 class Conversion {
@@ -38,7 +43,6 @@ class Conversion {
         int     isDisplayable();
         void    setType();
         void    converter();
-        const   std::string printErrorDisplay(const int &result) const;
 
     public:
 

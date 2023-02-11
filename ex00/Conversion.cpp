@@ -31,18 +31,28 @@ void        Conversion::convert() {
 void Conversion::toChar() {
 
     unsigned char value;
+    bool          onRange = true;
     std::cout << "char: ";
 
     switch (typeOfstr)
     {
         case 0:
-            value = static_cast<unsigned char> (element.Int);
+            if (element.Int > 32 && element.Int < 127)
+                value = static_cast<unsigned char> (element.Int);
+            else
+                onRange = false;
             break;
         case 1:
-            value = static_cast<unsigned char> (element.Float);
+            if (element.Float >= 33 && element.Float <= 126)
+                value = static_cast<unsigned char> (element.Float);
+            else
+                onRange = false;
             break;
         case 2:
-            value = static_cast<unsigned char> (element.Double);
+            if (element.Double >= 33 && element.Double <= 126)
+                value = static_cast<unsigned char> (element.Double);
+            else
+                onRange = false;
             break;
         case 3:
             value = element.Char; 
@@ -54,7 +64,7 @@ void Conversion::toChar() {
             break;
     }
 
-    if ((value < 32 || value > 127) && typeOfstr != -1)
+    if (onRange == false && typeOfstr != -1)
         std::cout << " not displayable";
     else
         std::cout << " " << value; 
@@ -70,7 +80,7 @@ void Conversion::toInt() {
     switch (typeOfstr)
     {
         case 0:
-            std::cout << element.Int;   
+            value = element.Int;   
             break;
         case 1:
             value = static_cast<int> (element.Float);
@@ -87,37 +97,53 @@ void Conversion::toInt() {
         default:
             break;
     }
-
-    std::cout << " " << value;
+    
+    if (element.isnan == true)
+        std::cout << "impossible";
+    else if (typeOfstr != -1 && element.firstConvError == false)
+        std::cout << " " << value;
+    if (element.firstConvError == true)
+        std::cout << "impossible";
     std::cout << std::endl;
 }
 
 void Conversion::toFloat() {
+    float  value;
     std::cout << "float: ";
 
     switch (typeOfstr)
     {
-        case 0:   
+        case 0:
+            value = static_cast<float> (element.Int);
             break;
         case 1:
-            std::cout << element.Int;
+            value = element.Float;
             break;
         case 2:
+            value = static_cast<float> (element.Double);
             break;
         case 3:
+            value = static_cast<float> (element.Char);
             break;
         case -1:
             break;
         default:
             break;
     }
-
+    
+    if (element.isnan == true)
+        std::cout << "nanf";
+    else if (element.firstConvError == false)
+        std::cout << std::fixed << std::setprecision(1) << value << "f";
+    else
+        std::cout << "impossible";
+    
     std::cout << std::endl;
 }
 
 void Conversion::toDouble() {
     std::cout << "double: ";
-    double value = 0;
+    double value = 0.0;
 
     switch (typeOfstr)
     {
@@ -139,8 +165,11 @@ void Conversion::toDouble() {
             break;
     }
 
-
-    std::cout << " " << value << std::endl;
+     if (element.isnan == true)
+        std::cout << "nan";
+    else
+        std::cout << " " << value;
+    std::cout << std::endl;
 }
 
 int          Conversion::isDisplayable() {
@@ -150,14 +179,6 @@ int          Conversion::isDisplayable() {
         return 1;
     else
         return 2;
-}
-
-const   std::string Conversion::printErrorDisplay(const int &result) const {
-   
-    if (result == 0)
-        return ("Non displayable");
-    else
-        return ("impossible");
 }
 
 bool        Conversion::isChar() {
@@ -194,8 +215,12 @@ bool        Conversion::isFloat() {
         {
             if (_str[pos] == '.' && dot == false)
                 dot = true;
-            else
+            else if (_str.length() > 1) {
+                element.isnan = true;
+            }
+            else {
                 return false;
+            }
         }
         pos++;
     }
@@ -216,6 +241,9 @@ bool        Conversion::isDouble() {
         {
             if (_str[pos] == '.' && dot == false)
                 dot = true;
+            else if (_str.length() > 1) {
+                element.isnan = true;
+            }
             else
                 return false;
         }
@@ -242,10 +270,10 @@ void        Conversion::setType() {
 
 void      Conversion::converter() {
 
-    std::stringstream stream(_str);
     long int li = 0;
     double  db = 0;
     
+    std::stringstream stream(_str);
 
     switch (typeOfstr)
     {
