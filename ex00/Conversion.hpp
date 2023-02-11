@@ -12,8 +12,8 @@
 #include <limits>
 #include <cmath>
 
-#define DBL_MAX
-#define DBL_MIN
+#define DBL_MAX 9223372036854775808
+#define DBL_MIN -9223372036854775808
 
 typedef struct s_elements {
     int     Int;

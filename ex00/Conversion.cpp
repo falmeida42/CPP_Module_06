@@ -1,4 +1,6 @@
 #include "Conversion.hpp"
+#include <float.h>
+#include <math.h>
 
 Conversion::Conversion() {
 
@@ -74,6 +76,7 @@ void Conversion::toChar() {
 void Conversion::toInt() {
 
     int value = 0;
+    bool maxmin = false;
 
     std::cout << "int: ";
 
@@ -83,32 +86,34 @@ void Conversion::toInt() {
             value = element.Int;   
             break;
         case 1:
+            if (element.Float > INT_MAX || element.Float < INT_MIN)
+                maxmin = true;
             value = static_cast<int> (element.Float);
             break;
         case 2:
+            if (element.Double > INT_MAX || element.Double < INT_MIN)
+                maxmin = true;
             value = static_cast<int> (element.Double);
             break;
         case 3:
             value = static_cast<int> (element.Char);
             break;
         case -1:
-            std::cout << "impossible";
             break;
         default:
             break;
     }
     
-    if (element.isnan == true)
+    if (element.isnan == true || element.firstConvError == true || maxmin == true)
         std::cout << "impossible";
     else if (typeOfstr != -1 && element.firstConvError == false)
         std::cout << " " << value;
-    if (element.firstConvError == true)
-        std::cout << "impossible";
     std::cout << std::endl;
 }
 
 void Conversion::toFloat() {
     float  value;
+
     std::cout << "float: ";
 
     switch (typeOfstr)
@@ -130,11 +135,15 @@ void Conversion::toFloat() {
         default:
             break;
     }
-    
+
     if (element.isnan == true)
         std::cout << "nanf";
-    else if (element.firstConvError == false)
-        std::cout << std::fixed << std::setprecision(1) << value << "f";
+    else if (element.firstConvError == false) {
+        if (!isinf(value))
+            std::cout << std::fixed << std::setprecision(1) << value << "f";
+        else
+            std::cout << "impossible";
+    }
     else
         std::cout << "impossible";
     
@@ -165,8 +174,10 @@ void Conversion::toDouble() {
             break;
     }
 
-     if (element.isnan == true)
+    if (element.isnan == true)
         std::cout << "nan";
+    else if (typeOfstr == -1 || element.firstConvError == true || isinf(value))
+        std::cout << "impossible";
     else
         std::cout << " " << value;
     std::cout << std::endl;
@@ -272,6 +283,7 @@ void      Conversion::converter() {
 
     long int li = 0;
     double  db = 0;
+
     
     std::stringstream stream(_str);
 
@@ -279,7 +291,7 @@ void      Conversion::converter() {
     {
         case 0:
             stream >> li;
-            if (li > INT_MAX || li < INT_MIN)
+            if (li > LONG_MAX || li < LONG_MIN)
                 element.firstConvError = true;
             element.Int = static_cast<int> (li);
             break;
@@ -291,6 +303,8 @@ void      Conversion::converter() {
             db = std::strtod(_str.c_str(), NULL);
             db = std::strtod(_str.c_str(), NULL);
             element.Double = std::strtod(_str.c_str(), NULL);
+            if (db > LONG_MAX || db < LONG_MIN)
+                element.firstConvError = true;
             break;
         case 3:
             stream >> element.Char;
